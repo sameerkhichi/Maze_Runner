@@ -15,55 +15,78 @@ import org.apache.commons.cli.*;
 
 public class Main {
 
+    //Private object instances for Main class/information hiding
     private static final Logger logger = LogManager.getLogger();
     private static Options options = new Options();
-    private static CommandLineParser parser = new DefaultParser();
     
+    //private variable for the filepath
+    private String filepath;
 
     public static void main(String[] args) {
 
-        options.addOption("i", false, "Include maze file path");
+        //sorry I know these lines are long, its for a concise description
+        options.addOption("i", false, "Maze File - Specifies the filename to be used");
+        options.addOption("p", false, "Path sequence - Activates path verification mode to check if the entered sequence solves the maze");
 
-        for(int i=0; i < args.length; i++){
-            
-            logger.debug("Checks flags", args[i]);
-            if(options.hasOption("-i")){
-
-                logger.info("** Starting Maze Runner");
-                try {
-
-                    logger.info("**** Reading the maze from file " + args[i+1]);
-                    BufferedReader reader = new BufferedReader(new FileReader(args[i+1]));
-                    String line;
-
-                    while ((line = reader.readLine()) != null) {
-                        for (int idx = 0; idx < line.length(); idx++) {
-                            if (line.charAt(idx) == '#') {
-                                logger.trace("WALL ");
-                            } else if (line.charAt(idx) == ' ') {
-                                logger.trace("PASS ");
-                            }
-                        }
-
-                        logger.trace(System.lineSeparator());
-                    }
-
-                    reader.close(); //closing the reader
-
-                    break;
-                } 
-
-                catch(Exception e){
-                    logger.error("/!\\ An error has occured /!\\");
-                }
+        try{
+            for(int i=0; i < args.length; i++){
                 
+                logger.debug("Checks flags", args[i]);
+                if(options.hasOption("-i")){
+                    //creating an instance of the Main class object
+                    Main main = new Main(args[i+1]);
+                    //starting the game 
+                    main.startGame(main.getFilePath());
+                    break;
+                }
             }
         }
 
-        
+        catch(Exception e){
+            logger.error("/!\\ An error has occured /!\\");
+        }
 
         logger.info("**** Computing path");
         logger.info("PATH NOT COMPUTED");
         logger.info("** End of MazeRunner");
+    }
+
+    //constructor for the main class
+    public Main(String filepath){
+        this.filepath = filepath;
+        logger.debug("The filepath given", filepath);
+    }
+
+    //getter for the filepath/encapsulating it
+    public String getFilePath(){
+        return filepath;
+    }
+
+    //method to start the game
+    public void startGame(String filepath){
+        try{
+            logger.info("** Starting Maze Runner");
+
+            logger.info("**** Reading the maze from file " + filepath);
+            BufferedReader reader = new BufferedReader(new FileReader(filepath));
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+                for (int idx = 0; idx < line.length(); idx++) {
+                    if (line.charAt(idx) == '#') {
+                        logger.trace("WALL ");
+                    } else if (line.charAt(idx) == ' ') {
+                        logger.trace("PASS ");
+                    }
+                }
+
+                logger.trace(System.lineSeparator());
+            }
+
+            reader.close(); //closing the reader
+        }
+        catch(Exception e){
+            logger.error("/!\\ An error has occured /!\\");
+        }
     }
 }

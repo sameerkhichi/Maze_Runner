@@ -33,25 +33,25 @@ public class Main {
                 
                 logger.debug("Checks flags", args[i]);
                 
-                //allowing for maze file insertion
+                //allowing for path verification - checks this one first
+                if(options.hasOption("-p") && options.hasOption("-i")){
+                    logger.debug("path given", args[i+3]);
+                    //creating a instance of main class with verification mode active
+                    Main main = new Main(args[i+1],true,args[i+3]);
+                    main.startGame();
+                    break;
+                }
+                //allowing for maze file insertion if path verification is off
                 if(options.hasOption("-i")){
+                    logger.debug("maze given");
                     //creating an instance of the Main class 
-                    Main main = new Main(args[i+1],false, args[i+3]);
+                    Main main = new Main(args[i+1],false, null);
                     //starting the game 
                     main.startGame();
                     break;
                 }
-                //allowing for path verification
-                if(options.hasOption("-p")){
-                    //creating a instance of main class with verification mode active
-                    Main main = new Main(args[i+1],true,null);
-                    main.startGame();
-                    break;
-                }
-
             }
         }
-
         catch(Exception e){
             logger.error("/!\\ An error has occured /!\\");
         }
@@ -89,9 +89,18 @@ public class Main {
         //creates a new instance of the maze object and calls a function to create the maze
         Maze maze = new Maze();
         maze.createMaze(getFilePath());
+        //creating a new analyzer
+        Analyzer analyze = new Analyzer();
 
         if(getPathVerification()){
-            Analyzer analyze = new Analyzer();
+            logger.info("Verifying given path");
+            //printing to standard output if path is correct
+            if(analyze.validatePath(maze.getMaze(), maze.getEntry(), maze.getExit(), getPath())){
+                System.out.println("correct path");
+            }
+            else{
+                System.out.println("incorrect path");
+            }
         }
     }
 }

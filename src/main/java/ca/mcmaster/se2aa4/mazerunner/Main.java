@@ -36,7 +36,7 @@ public class Main {
                     //creating an instance of the Main class object
                     Main main = new Main(args[i+1]);
                     //starting the game 
-                    main.startGame(main.getFilePath());
+                    main.startGame();
                     break;
                 }
             }
@@ -63,30 +63,10 @@ public class Main {
     }
 
     //method to start the game
-    public void startGame(String filepath){
-        try{
-            logger.info("** Starting Maze Runner");
+    public void startGame(){
 
-            logger.info("**** Reading the maze from file " + filepath);
-            BufferedReader reader = new BufferedReader(new FileReader(filepath));
-            String line;
-
-            while ((line = reader.readLine()) != null) {
-                for (int idx = 0; idx < line.length(); idx++) {
-                    if (line.charAt(idx) == '#') {
-                        logger.trace("WALL ");
-                    } else if (line.charAt(idx) == ' ') {
-                        logger.trace("PASS ");
-                    }
-                }
-
-                logger.trace(System.lineSeparator());
-            }
-
-            reader.close(); //closing the reader
-        }
-        catch(Exception e){
-            logger.error("/!\\ An error has occured /!\\");
-        }
+        //creates a new instance of the maze object and calls a function to create the maze
+        Maze maze = new Maze();
+        maze.createMaze(getFilePath());
     }
 }

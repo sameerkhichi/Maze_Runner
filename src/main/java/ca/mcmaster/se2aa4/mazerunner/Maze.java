@@ -22,16 +22,17 @@ public class Maze{
     private int[] entry;
     private int[] exit;
 
+    //getters for all attributes of the maze object
     public char[][] getMaze(){
         return maze;
     }
     
     public int[] getEntry(){
-        return entry;
+        return entry; //stored as [entry row, entry column]
     }
 
     public int[] getExit(){
-        return exit;
+        return exit; //stored as [exit row, exit column]
     }
 
     //Function to create a maze
@@ -70,15 +71,25 @@ public class Maze{
             while((line = reader.readLine()) != null){
                 for(int col = 0; col < cols; col++){
                     maze[row][col] = line.charAt(col);
+
+                    //this will check for and store the entry and exit points in a 1D array
+                    if(col==0 && (line.charAt(col) == ' ')){
+                        entry = new int[]{(row + 1), 1}; //remember rows and columns start at 1 not 0
+                    }
+                    if( (col == (cols - 1)) && (line.charAt(col) == ' ') ){
+                        exit = new int[]{(row + 1), cols};
+                    }
                 }
                 row++;
             }
 
             reader.close();
             mazeLogger.info("Maze has dimensions " + rows + " by " + cols);
+            mazeLogger.info("Maze entry: " + entry[0] + "," + entry[1]);
+            mazeLogger.info("Maze exit: " + exit[0] + "," + exit[1]);
         }
         catch(Exception e){
-            mazeLogger.error("/!\\ An error has occured /!\\");
+            mazeLogger.error("/!\\ An error has occurred /!\\");
         }
     }
 }

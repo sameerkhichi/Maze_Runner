@@ -59,10 +59,6 @@ public class Main {
             logger.debug(e);
             logger.error("/!\\ An error has occurred /!\\");
         }
-
-        logger.info("**** Computing path");
-        logger.info("PATH NOT COMPUTED");
-        logger.info("** End of MazeRunner");
     }
 
     //constructor for the main class
@@ -110,7 +106,13 @@ public class Main {
                 System.exit(0);
             }
         }
+        else{
+            analyze.computePath();
+            System.out.println(analyze.getComputedPath());
+        }
 
+        //end the program
+        logger.info("End of MazeRunner");
         System.exit(0);
     }
 }

@@ -39,9 +39,9 @@ public class Maze{
     public void createMaze(String filepath){
 
         try{
-            mazeLogger.info("** Starting Maze Runner");
+            mazeLogger.info("Starting Maze Runner");
 
-            mazeLogger.info("**** Reading the maze from file " + filepath);
+            mazeLogger.info("Reading the maze from file " + filepath);
             BufferedReader reader = new BufferedReader(new FileReader(filepath));
             String line = reader.readLine(); //reads the first line
 

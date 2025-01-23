@@ -13,6 +13,24 @@ public class Analyzer  {
 
     private final Logger analyzerLogger = LogManager.getLogger();
 
+    private String computedPath;
+
+    //getter for the path computed by the computer
+    public String getComputedPath(){
+        return computedPath;
+    }
+
+    //function to compute a path through the maze given
+    public void computePath(){
+        /*
+        path computation not part of MVP
+        will use the right-hand algorithm to compute a path and update class attribute
+        */
+        analyzerLogger.info("Computing path");
+        analyzerLogger.info("PATH NOT COMPUTED");
+    }
+
+    //function to validate paths given to the program
     public boolean validatePath(char[][] maze, int[] entry, int[] exit, String path){
         
         //retrieving starting position from entry array

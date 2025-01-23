@@ -56,6 +56,7 @@ public class Main {
             }
         }
         catch(Exception e){
+            logger.debug(e);
             logger.error("/!\\ An error has occurred /!\\");
         }
 
@@ -102,10 +103,14 @@ public class Main {
             //printing to standard output if path is correct
             if(analyze.validatePath(maze.getMaze(), maze.getEntry(), maze.getExit(), getPath())){
                 System.out.println("correct path");
+                System.exit(0);
             }
             else{
                 System.out.println("incorrect path");
+                System.exit(0);
             }
         }
+
+        System.exit(0);
     }
 }

@@ -48,6 +48,7 @@ public class Maze{
             //incase the maze file that is passed is empty
             if(line == null){
                 reader.close();
+                mazeLogger.debug("Maze file is Empty");
                 throw new IllegalArgumentException("Maze does not exist");
             }
             
@@ -69,19 +70,27 @@ public class Maze{
             //now store initialized maze array
             int row = 0;  
             while((line = reader.readLine()) != null){
+
+                //this is called padding, makes it easier to deal with a special case of a straight maze
+                //this also padds uneven line lengths to make them easier to deal with
+                line = line + " ".repeat(Math.max(0, cols - line.length()));
+
                 for(int col = 0; col < cols; col++){
                     maze[row][col] = line.charAt(col);
 
                     //this will check for and store the entry and exit points in a 1D array
                     if(col==0 && (line.charAt(col) == ' ')){
-                        entry = new int[]{(row + 1), 1}; //remember rows and columns start at 1 not 0
+                        entry = new int[]{(row), 1}; //initial code setup used indexing that started at 1
+                        mazeLogger.debug("Entry Stored");
                     }
                     if( (col == (cols - 1)) && (line.charAt(col) == ' ') ){
-                        exit = new int[]{(row + 1), cols};
+                        exit = new int[]{(row), cols};
+                        mazeLogger.debug("Exit Stored");
                     }
                 }
                 row++;
             }
+            mazeLogger.debug("Stored maze successfully");
 
             reader.close();
             mazeLogger.info("Maze has dimensions " + rows + " by " + cols);
@@ -89,6 +98,7 @@ public class Maze{
             mazeLogger.info("Maze exit: " + exit[0] + "," + exit[1]);
         }
         catch(Exception e){
+            mazeLogger.debug(e);
             mazeLogger.error("/!\\ An error has occurred /!\\");
         }
     }

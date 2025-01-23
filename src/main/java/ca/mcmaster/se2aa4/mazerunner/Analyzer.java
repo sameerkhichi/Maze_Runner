@@ -47,12 +47,15 @@ public class Analyzer  {
                 int nextRow = row + moves[directionFacing][0];
                 int nextCol = col + moves[directionFacing][1];
 
-                //checking if any move sends the player out of the maze
-                if(nextRow < 0 || nextRow >= maze.length){
-                    if(nextCol < 0 || nextCol >= maze[0].length){
-                        analyzerLogger.info("Out of Bounds!");
-                        return false;
+                //checking if any move sends the player 
+                if(nextCol < 0 || nextCol >= maze[0].length || nextRow < 0 || nextRow >= maze.length){
+                    //ensuring the maze is solved by comparing current position with exit position
+                    if((nextRow == exit[0]) && (nextCol == exit[1])){
+                        analyzerLogger.info("Valid path given");
+                        return true;
                     }
+                    analyzerLogger.info("Out of Bounds!");
+                    return false;
                 }
 
                 //checking to see if the player hits a wall
@@ -74,14 +77,9 @@ public class Analyzer  {
             movementCount++;
         }
         
-        //ensuring the maze is solved by comparing current position with exit position
-        if((row == exit[0]) && (col == exit[1])){
-            analyzerLogger.info("Valid path given");
-            return true;
-        }
-        else{
-            analyzerLogger.info("Invalid path given - Still inside maze");
-            return false;
-        }
+        //if the entered path is not illegal but does not solve the maze
+        analyzerLogger.info("Invalid path given - Still inside maze");
+        return false;
+    
     }
 }

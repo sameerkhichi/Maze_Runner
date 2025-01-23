@@ -58,6 +58,8 @@ public class Analyzer  {
                 //checking to see if the player hits a wall
                 if(maze[nextRow][nextCol] == '#'){
                     analyzerLogger.info("You hit a wall!");
+                    analyzerLogger.debug(nextRow);
+                    analyzerLogger.debug(nextCol);
                     return false;
                 }
 

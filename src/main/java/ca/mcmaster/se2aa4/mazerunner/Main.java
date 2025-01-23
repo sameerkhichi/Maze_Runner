@@ -8,6 +8,7 @@ package ca.mcmaster.se2aa4.mazerunner;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.parser.ParseException;
 import org.apache.commons.cli.*;
 
 public class Main {
@@ -25,35 +26,37 @@ public class Main {
     public static void main(String[] args) {
 
         //sorry I know these lines are long, its for a concise description
-        options.addOption("i", false, "Maze File - Specifies the filename to be used");
-        options.addOption("p", false, "Path sequence - Activates path verification mode to check if the entered sequence solves the maze");
+        options.addOption("i", true, "Maze File - Specifies the filename to be used");
+        options.addOption("p", true, "Path sequence - Activates path verification mode to check if the entered sequence solves the maze");
 
         try{
-            for(int i=0; i < args.length; i++){
-                
-                logger.debug("Checks flags", args[i]);
-                
-                //allowing for path verification - checks this one first
-                if(options.hasOption("-p") && options.hasOption("-i")){
-                    logger.debug("path given", args[i+3]);
-                    //creating a instance of main class with verification mode active
-                    Main main = new Main(args[i+1],true,args[i+3]);
-                    main.startGame();
-                    break;
+
+            CommandLineParser parser = new DefaultParser();
+            CommandLine cmd = parser.parse(options, args);
+
+            String filepath;
+            String path;
+            boolean pathVerification = false;
+
+            if(cmd.hasOption("i")){
+                filepath = cmd.getOptionValue("i");
+                path = null;
+
+                if(cmd.hasOption("p")){
+                    pathVerification = true;
+                    path = cmd.getOptionValue("p");
                 }
-                //allowing for maze file insertion if path verification is off
-                if(options.hasOption("-i")){
-                    logger.debug("maze given");
-                    //creating an instance of the Main class 
-                    Main main = new Main(args[i+1],false, null);
-                    //starting the game 
-                    main.startGame();
-                    break;
-                }
+
+                logger.debug(path);
+                Main main = new Main(filepath, pathVerification, path);
+                main.startGame();
+            }
+            else{
+                throw new ParseException("To pass a file include -i flag");
             }
         }
         catch(Exception e){
-            logger.error("/!\\ An error has occured /!\\");
+            logger.error("/!\\ An error has occurred /!\\");
         }
 
         logger.info("**** Computing path");
@@ -65,6 +68,7 @@ public class Main {
     public Main(String filepath, boolean pathVerification, String path){
         this.filepath = filepath;
         this.pathVerification = pathVerification;
+        this.path = path;
         logger.debug("The filepath given", filepath);
     }
 
@@ -94,6 +98,7 @@ public class Main {
 
         if(getPathVerification()){
             logger.info("Verifying given path");
+            logger.debug(getPath());
             //printing to standard output if path is correct
             if(analyze.validatePath(maze.getMaze(), maze.getEntry(), maze.getExit(), getPath())){
                 System.out.println("correct path");

@@ -66,7 +66,6 @@ public class Main {
         this.filepath = filepath;
         this.pathVerification = pathVerification;
         this.path = path;
-        logger.debug("The filepath given", filepath);
     }
 
     //getter for the filepath/encapsulating it
@@ -84,6 +83,12 @@ public class Main {
         return path;
     }
 
+    //setter for the path - when converted from factorized
+    public void setPath(String path){
+        this.path = path;
+        logger.debug("path after using setter method: " + path);
+    }
+
     //method to start the game
     public void startGame(){
 
@@ -93,9 +98,13 @@ public class Main {
         //creating a new analyzer
         Analyzer analyze = new Analyzer();
 
+        logger.debug("Path before conversion: " + path);
+        //convert path before validating it - avoiding complications
+        setPath(analyze.expandPath(path));
+
         if(getPathVerification()){
             logger.info("Verifying given path");
-            logger.debug(getPath());
+            logger.debug("Path before validation " + getPath());
             //printing to standard output if path is correct
             if(analyze.validatePath(maze.getMaze(), maze.getEntry(), maze.getExit(), getPath())){
                 System.out.println("correct path");

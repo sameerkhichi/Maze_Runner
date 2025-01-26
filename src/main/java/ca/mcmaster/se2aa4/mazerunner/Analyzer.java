@@ -48,7 +48,7 @@ public class Analyzer  {
         while(matcher.find()){
 
             //this handles any non factorized path by adding any text before this matches to the string
-            fullPath.append(fullPath, lastIndex, matcher.start());
+            fullPath.append(path.substring(lastIndex, matcher.start()));
 
             //extracting the number from the regex match the matcher gets
             int factorizedAmount = Integer.parseInt(matcher.group(1));
@@ -63,6 +63,7 @@ public class Analyzer  {
         }
 
         fullPath.append(path.substring(lastIndex));
+        analyzerLogger.debug(fullPath.toString());
         return fullPath.toString();
     }
 
@@ -70,8 +71,7 @@ public class Analyzer  {
     //function to validate paths given to the program
     public boolean validatePath(char[][] maze, int[] entry, int[] exit, String path){
         
-        path = expandPath(path);
-        analyzerLogger.debug("Path after conversion: " + path);
+        analyzerLogger.debug("Path before validation: " + path);
 
         //retrieving starting position from entry array
         int row = entry[0];

@@ -6,6 +6,8 @@
 
 package ca.mcmaster.se2aa4.mazerunner;
 
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -30,9 +32,47 @@ public class Analyzer  {
         analyzerLogger.info("PATH NOT COMPUTED");
     }
 
+    //this function uses regular expression matches to convert the factorized path to a cononical one
+    public String expandPath(String path){
+
+        StringBuilder fullPath = new StringBuilder();
+
+        //regex pattern \\d+ : one or more digit, then matches exactly one letter F,L or R
+        //the brackets () are matching groups which is what the while loop uses matcher.group(1 or 2)
+        Pattern pattern = Pattern.compile("(\\d+)([FLR])");
+        Matcher matcher = pattern.matcher(path);
+
+        int lastIndex = 0;
+
+        //matcher.find will get the next match in the string for the path
+        while(matcher.find()){
+
+            //this handles any non factorized path by adding any text before this matches to the string
+            fullPath.append(fullPath, lastIndex, matcher.start());
+
+            //extracting the number from the regex match the matcher gets
+            int factorizedAmount = Integer.parseInt(matcher.group(1));
+            //getting the direction from the regex match
+            char factorizedDirection = matcher.group(2).charAt(0);
+
+            //adding the right direction the same number of times as the value of the number before it
+            fullPath.append(String.valueOf(factorizedDirection).repeat(factorizedAmount));
+
+            lastIndex = matcher.end();
+
+        }
+
+        fullPath.append(path.substring(lastIndex));
+        return fullPath.toString();
+    }
+
+
     //function to validate paths given to the program
     public boolean validatePath(char[][] maze, int[] entry, int[] exit, String path){
         
+        path = expandPath(path);
+        analyzerLogger.debug("Path after conversion: " + path);
+
         //retrieving starting position from entry array
         int row = entry[0];
         int col = entry[1];

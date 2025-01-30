@@ -22,14 +22,58 @@ public class Analyzer  {
         return computedPath;
     }
 
-    //function to compute a path through the maze given
-    public void computePath(){
-        /*
-        path computation not part of MVP
-        will use the right-hand algorithm to compute a path and update class attribute
-        */
+    //setter to update the computed path attribute
+    public void setComputedPath(String computedPath){
+        this.computedPath = computedPath;
+    }
+
+    //function to compute a path through the maze given (uses the right hand exploration technique)
+    public void computePath(char[][] maze, int[] entry, int[] exit){
         analyzerLogger.info("Computing path");
-        analyzerLogger.info("PATH NOT COMPUTED");
+
+        StringBuilder buildingPath = new StringBuilder();
+
+        int row = entry[0];
+        int col = entry[1];
+        //try using the validatingpath method
+        while((row != exit[0]) || (col != exit[1])){
+            //variable library
+            int nextCol;
+            int down;
+            int up;
+
+            //while still in range of the maze, increase keep track of the next column
+            if(col < exit[1] - 1){
+                nextCol = col + 1;
+            }
+            else{
+                nextCol = col;
+            }
+            
+            down = row + 1;
+            up = row - 1;
+
+            //assuming entering on east facing west
+            if(maze[row][nextCol] == ' '){
+                buildingPath.append("F"); //right now it only supports one direction mazes
+            }
+
+            if(maze[row][nextCol] == '#'){
+
+                if(maze[down][col] == ' '){
+                    buildingPath.append("R");
+                    row++;
+                }
+                if(maze[up][col] == ' '){
+                    buildingPath.append("L");
+                    row--;
+                }
+            }
+            col++;
+        }
+
+        analyzerLogger.debug("computed path: " + buildingPath.toString());
+        setComputedPath(buildingPath.toString());
     }
 
     //this function uses regular expression matches to convert the factorized path to a cononical one

@@ -56,6 +56,7 @@ public class Main {
             }
         }
         catch(Exception e){
+            logger.info("PATH NOT COMPUTED");
             logger.debug(e);
             logger.error("/!\\ An error has occurred /!\\");
         }
@@ -99,10 +100,12 @@ public class Main {
         Analyzer analyze = new Analyzer();
 
         logger.debug("Path before conversion: " + path);
-        //convert path before validating it - avoiding complications
-        setPath(analyze.expandPath(path));
 
         if(getPathVerification()){
+
+            //convert path before validating it - avoiding complications
+            setPath(analyze.expandPath(path));
+
             logger.info("Verifying given path");
             logger.debug("Path before validation " + getPath());
             //printing to standard output if path is correct
@@ -116,7 +119,7 @@ public class Main {
             }
         }
         else{
-            analyze.computePath();
+            analyze.computePath(maze.getMaze(), maze.getEntry(), maze.getExit());
             System.out.println(analyze.getComputedPath());
         }
 

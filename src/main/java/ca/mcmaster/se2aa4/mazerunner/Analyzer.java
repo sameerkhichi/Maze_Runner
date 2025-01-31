@@ -27,6 +27,11 @@ public class Analyzer  {
         this.computedPath = computedPath;
     }
 
+    //helper method to check if the move made in the algorithm is valid
+    private boolean moveChecker(char[][] maze, int row, int col){
+        return row < maze.length && row >=0 && col < maze[0].length && col >= 0 && maze[row][col] != '#';
+    }
+
     //function to compute a path through the maze given (uses the right hand exploration technique)
     public void computePath(char[][] maze, int[] entry, int[] exit){
         analyzerLogger.info("Computing path");
@@ -35,45 +40,84 @@ public class Analyzer  {
 
         int row = entry[0];
         int col = entry[1];
-        //try using the validatingpath method
+        
+        //the method for tracking directions and moves is from the validatePath method
+        //start facing east
+        int directionFacing = 1;
+
+        //moves to 'walk' across the maze {north, east, south, west}
+        int[][] moves = {{-1,0}, {0,1}, {1,0}, {0,-1}};
+
         while((row != exit[0]) || (col != exit[1])){
-            //variable library
-            int nextCol;
-            int down;
-            int up;
 
-            //while still in range of the maze, increase keep track of the next column
-            if(col < exit[1] - 1){
-                nextCol = col + 1;
+            analyzerLogger.debug(buildingPath.toString());
+
+            //checking if the next spot forward is a match for the exit
+            if((row + moves[directionFacing][0] == exit[0]) && (col + moves[directionFacing][1] == exit[1])){
+                buildingPath.append("F");
+                break;
             }
+
+            //storing all variables relating to the right side of the pointer walking through the maze
+            int rightSide = ((directionFacing + 1) % 4);
+            int rightRow = (row + moves[rightSide][0]);
+            int rightCol = (col + moves[rightSide][1]);
+
+            //saving all the variables related to the left side of the pointer
+            int leftside = ((directionFacing + 3) % 4);
+            int leftRow = (row + moves[leftside][0]);
+            int leftCol = (col + moves[leftside][1]);
+
+            //prioritizes turning right - if it can it also moves forward
+            //continue at the end to skip the rest of the loop after already moving
+            if(moveChecker(maze, rightRow, rightCol)){
+                directionFacing = rightSide;
+                row = rightRow;
+                col = rightCol;
+                buildingPath.append("RF");
+                continue;
+            }
+            //second priority is moving forward if right is blocked
+            //moving in the direction the pointer is facing
+            if(moveChecker(maze, row + moves[directionFacing][0], col + moves[directionFacing][1])){
+                row += moves[directionFacing][0];
+                col += moves[directionFacing][1];
+                buildingPath.append("F");
+                continue;
+            }
+            //if the algorithm cant turn right or go forward it tries turning left and moving forward
+            if(moveChecker(maze, leftRow, leftCol)){
+                directionFacing = leftside;
+                row = leftRow;
+                col = leftCol;
+                buildingPath.append("LF");
+                continue;
+            }
+            //if it cant turn left then its at a dead end so it turns around fully and moves forward.
             else{
-                nextCol = col;
-            }
             
-            down = row + 1;
-            up = row - 1;
+                directionFacing = ((directionFacing + 2) % 4);
 
-            //assuming entering on east facing west
-            if(maze[row][nextCol] == ' '){
-                buildingPath.append("F"); //right now it only supports one direction mazes
+                row += moves[directionFacing][0];
+                col += moves[directionFacing][1];
+
+                //this can be LLF too it doesnt really matter - defaulted to turning right twice                    
+                buildingPath.append("RRF");
+                continue;
+     
             }
 
-            if(maze[row][nextCol] == '#'){
-
-                if(maze[down][col] == ' '){
-                    buildingPath.append("R");
-                    row++;
-                }
-                if(maze[up][col] == ' '){
-                    buildingPath.append("L");
-                    row--;
-                }
-            }
-            col++;
         }
 
-        analyzerLogger.debug("computed path: " + buildingPath.toString());
-        setComputedPath(buildingPath.toString());
+        if(validatePath(maze, entry, exit, buildingPath.toString())){
+            analyzerLogger.debug("computed path: " + buildingPath.toString());
+            setComputedPath(buildingPath.toString());
+        }
+        else{
+            analyzerLogger.debug("Failed Computed Path: " + buildingPath.toString());
+            analyzerLogger.error("Right Hand Algorithm Failed");
+        }
+        
     }
 
     //this function uses regular expression matches to convert the factorized path to a cononical one
@@ -137,19 +181,19 @@ public class Analyzer  {
                 directionFacing = ((directionFacing + 1) % 4);
             }
             //turn left
-            if(move == 'L'){
+            else if(move == 'L'){
                 directionFacing = ((directionFacing + 3) % 4);
             }
             //ignore spaces
-            if(move == ' '){
+            else if(move == ' '){
                 continue;
             }
             //move forward
-            if(move == 'F'){
+            else if(move == 'F'){
                 int nextRow = row + moves[directionFacing][0];
                 int nextCol = col + moves[directionFacing][1];
 
-                //checking if any move sends the player 
+                //checking if any move sends the player out of the maze
                 if(nextCol < 0 || nextCol >= maze[0].length || nextRow < 0 || nextRow >= maze.length){
                     //ensuring the maze is solved by comparing current position with exit position
                     if((nextRow == exit[0]) && (nextCol == exit[1])){

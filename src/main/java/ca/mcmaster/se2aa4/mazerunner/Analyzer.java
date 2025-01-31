@@ -111,7 +111,7 @@ public class Analyzer  {
 
         if(validatePath(maze, entry, exit, buildingPath.toString())){
             analyzerLogger.debug("computed path: " + buildingPath.toString());
-            setComputedPath(buildingPath.toString());
+            setComputedPath(compressPath(buildingPath.toString()));
         }
         else{
             analyzerLogger.debug("Failed Computed Path: " + buildingPath.toString());
@@ -120,11 +120,42 @@ public class Analyzer  {
         
     }
 
+    private String compressPath(String path){
+
+        StringBuilder factorizedPath = new StringBuilder();
+        //I could use regular expression but using a loop and doing it manually is more flexible
+        
+        int pathLength = path.length();
+        int iterations = 0;
+
+        //iterate through the path
+        while(iterations < pathLength){
+
+            char currentCharacter = path.charAt(iterations);
+            int counter = 1;
+
+            //if the next character is the same as the current then count how many
+            while(((iterations + 1) < pathLength) && (path.charAt(iterations + 1) == currentCharacter)){
+                counter++;
+                iterations++;
+            }
+
+            //append how many if not one and what character
+            if(counter > 1){
+                factorizedPath.append(counter);
+            }
+            factorizedPath.append(currentCharacter);
+            iterations++;
+        }
+        analyzerLogger.debug("Factorized Path: " + factorizedPath.toString());
+        return factorizedPath.toString();
+    }
+
     //this function uses regular expression matches to convert the factorized path to a cononical one
     public String expandPath(String path){
 
         StringBuilder fullPath = new StringBuilder();
-
+        //I couldve used a loop to manually do this but regular expression were easier in this case
         //regex pattern \\d+ : one or more digit, then matches exactly one letter F,L or R
         //the brackets () are matching groups which is what the while loop uses matcher.group(1 or 2)
         Pattern pattern = Pattern.compile("(\\d+)([FLR])");
@@ -181,7 +212,7 @@ public class Analyzer  {
                 directionFacing = ((directionFacing + 1) % 4);
             }
             //turn left
-            else if(move == 'L'){
+            else if(move == 'L'){ //these NEED to be else if, otherwise it breaks everything, took me 2 hours of yelling to figure that out
                 directionFacing = ((directionFacing + 3) % 4);
             }
             //ignore spaces

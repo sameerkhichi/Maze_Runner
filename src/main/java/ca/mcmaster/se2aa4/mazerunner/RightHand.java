@@ -99,6 +99,7 @@ public class RightHand extends Analyzer implements Algorithms{
 
         if(validatePath(maze, entry, exit, buildingPath.toString())){
             righthandLogger.debug("computed path: " + buildingPath.toString());
+            //the path to be printed is in factorized format for simplicity 
             setComputedPath(compressPath(buildingPath.toString()));
         }
         else{

@@ -7,7 +7,7 @@
     </Appenders>
 
     <Loggers>
-        <Root level="debug">
+        <Root level="off"> <!--change this value to toggle logger: off, trace, info, debug-->
             <AppenderRef ref="console" />
         </Root>
     </Loggers>

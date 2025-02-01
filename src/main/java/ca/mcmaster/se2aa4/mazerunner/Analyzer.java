@@ -39,6 +39,7 @@ public class Analyzer {
         return computedPath;
     }
 
+    //method that converts paths to factorized form for output
     public String compressPath(String path){
 
         StringBuilder factorizedPath = new StringBuilder();
@@ -70,7 +71,7 @@ public class Analyzer {
         return factorizedPath.toString();
     }
 
-    //this function uses regular expression matches to convert the factorized path to a cononical one
+    //this function uses regular expression matches to convert the factorized path to a cononical one for validation
     public String expandPath(String path){
 
         StringBuilder fullPath = new StringBuilder();

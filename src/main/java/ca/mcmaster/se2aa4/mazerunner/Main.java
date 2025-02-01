@@ -99,6 +99,7 @@ public class Main {
     }
 
     //just some help info
+    //Loggers need to be toggled on to view this
     private static void printUsage(){
         logger.info("Maze Runner Usage: java -jar target/mazerunner.jar [-i] [Path to maze file] [-p] [path]");
         logger.info("Using just the -i flag will compute a path for the selected maze using the Right Hand Algorithm.");

@@ -28,6 +28,7 @@ public class Main {
         //sorry I know these lines are long, its for a concise description
         options.addOption("i", true, "Maze File - Specifies the filename to be used");
         options.addOption("p", true, "Path sequence - Activates path verification mode to check if the entered sequence solves the maze");
+        options.addOption("h", false, "Help Flag - Prints usage");
 
         try{
 
@@ -38,7 +39,13 @@ public class Main {
             String path;
             boolean pathVerification = false;
 
-            if(cmd.hasOption("i")){
+            //additional flag for usage, prints to logger.
+            if(cmd.hasOption("h")){
+                printUsage();
+                System.exit(0);
+            }
+            //if help flag not used check for the functional ones
+            else if(cmd.hasOption("i")){
                 filepath = cmd.getOptionValue("i");
                 path = null;
 
@@ -48,6 +55,7 @@ public class Main {
                 }
 
                 logger.debug(path);
+                //create a new instance of the main class and start the program
                 Main main = new Main(filepath, pathVerification, path);
                 main.startGame();
             }
@@ -56,7 +64,7 @@ public class Main {
             }
         }
         catch(Exception e){
-            logger.info("PATH NOT COMPUTED");
+            logger.info("PATH NOT COMPUTED OR VALIDATED");
             logger.debug(e);
             logger.error("/!\\ An error has occurred /!\\");
         }
@@ -88,6 +96,14 @@ public class Main {
     public void setPath(String path){
         this.path = path;
         logger.debug("path after using setter method: " + path);
+    }
+
+    //just some help info
+    private static void printUsage(){
+        logger.info("Maze Runner Usage: java -jar target/mazerunner.jar [-i] [Path to maze file] [-p] [path]");
+        logger.info("Using just the -i flag will compute a path for the selected maze using the Right Hand Algorithm.");
+        logger.info("When passing in a path, canonical i.e: RFFLLF and factorized i.e: R2F2LF are both supported.");
+        logger.info("use a -h flag to get this information.");
     }
 
     //method to start the game

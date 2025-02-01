@@ -96,8 +96,9 @@ public class Main {
         //creates a new instance of the maze object and calls a function to create the maze
         Maze maze = new Maze();
         maze.createMaze(getFilePath());
-        //creating a new analyzer
+        //creating a new analyzer and a right hand algorithm object
         Analyzer analyze = new Analyzer();
+        RightHand rightHand = new RightHand();
 
         logger.debug("Path before conversion: " + path);
 
@@ -119,7 +120,7 @@ public class Main {
             }
         }
         else{
-            analyze.computePath(maze.getMaze(), maze.getEntry(), maze.getExit());
+            rightHand.computePath(maze.getMaze(), maze.getEntry(), maze.getExit());
             System.out.println(analyze.getComputedPath());
         }
 

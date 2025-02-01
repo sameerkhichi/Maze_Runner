@@ -97,8 +97,8 @@ public class Main {
         Maze maze = new Maze();
         maze.createMaze(getFilePath());
         //creating a new analyzer and a right hand algorithm object
-        Analyzer analyze = new Analyzer();
         RightHand rightHand = new RightHand();
+        Analyzer analyze = new Analyzer();
 
         logger.debug("Path before conversion: " + path);
 

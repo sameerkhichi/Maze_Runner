@@ -19,11 +19,19 @@ public class Analyzer {
 
     private final Logger analyzerLogger = LogManager.getLogger();
 
-    private String computedPath;
+    //this was made static so it could be changed after the object was created
+    private static String computedPath;
 
     //setter to update the computed path attribute
+    /*
+     * now since im setting the attributes value in another class
+     * and trying to retrieve it in another one, I have to make the attribute static.
+     * This is so the setter actually updates the attribute, and the getter isnt just null.
+     * I would rather not make static references but I cant find another way to make this work.
+     * Note: non static was causing the final path to be printed as "null"
+     */
     public void setComputedPath(String computedPath){
-        this.computedPath = computedPath;
+        Analyzer.computedPath = computedPath;
     }
 
     //getter for the path computed by the computer
